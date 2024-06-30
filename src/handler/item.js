@@ -5,74 +5,47 @@ class ItemHandler {
     // Binding
     this.findAll = this.findAll.bind(this);
     this.create = this.create.bind(this);
+    this.update = this.update.bind(this);
+    this.getByEmail = this.getByEmail.bind(this);
   }
 
   async findAll(req, res) {
-    const items = await this.itemService.findAll();
+    const serviceRes = await this.itemService.findAll();
 
-    res.status(200).send({
-      items: items
-    });
-  }
-
-  async create(req, res) {
-    const itemToCreate = req.body;
-    const createdItem = await this.itemService.create(itemToCreate);
-
-    res.status(201).send({
-      created_item: createdItem
+    res.status(serviceRes.statusCode).send({
+      listItems: serviceRes.listItems
     })
   }
 
-  // updateById(req, res) {
-  //   const itemId = req.params.id;
-  // }
+  async getByEmail(req, res) {
+    const email = req.params.email;
+    const serviceRes = await this.itemService.getByEmail(email);
+    
+    res.status(serviceRes.statusCode).send({
+      listItems: serviceRes.listItems
+    })
+  }
+
+  async create(req, res) {
+    const payload = req.body;
+    const serviceRes = await this.itemService.create(payload);
+
+    res.status(serviceRes.statusCode).send({
+      createdItem: serviceRes.createdItem
+    })
+  }
+
+  async update(req, res) {
+    const payload = req.body;
+    const serviceRes = await this.itemService.update(payload)
+
+    res.status(serviceRes.statusCode).send({
+      updatedItem: serviceRes.updatedItem
+    })
+  }
+
+
 }
 
 module.exports = ItemHandler;
 
-
-
-
-
-
-
-
-
-
-
-
-
-// // src/handler/product.js
-// class ProductHandler {
-//   constructor(productService) {
-//     this.productService = productService;
-
-//     // Binding
-//     this.create = this.create.bind(this);
-//     this.getAll = this.getAll.bind(this);
-//   }
-
-//   create(req, res) {
-//     const { name, price, user_email } = req.body;
-//     const productCreateStatus = this.productService.create({ name, price, user_email });
-
-//     let statusCode = 201;
-
-
-//     res.status(statusCode).send({
-//       registerStatus: productCreateStatus
-//     });
-//   }
-
-
-//   getAll(req, res) {
-//     const product = this.productService.getAll();
-
-//     res.status(200).send({
-//       product: product
-//     });
-//   }
-// }
-
-// module.exports = ProductHandler;

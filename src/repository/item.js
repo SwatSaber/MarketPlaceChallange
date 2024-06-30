@@ -1,4 +1,4 @@
-const { Item } = require('../../models')
+const { Item, User } = require('../../models')
 
 class ItemRepository {
   constructor() { }
@@ -10,16 +10,55 @@ class ItemRepository {
   }
 
   async insert(item) {
-    const createdUser = await Item.create({
+    const createdItem = await Item.create({
       name: item.name,
-      email: user.email,
-      password: user.password
+      price: item.price,
+      description: item.description,
+      userId: item.userId
     });
 
-    return createdUser;
+    return createdItem;
   }
 
-  async getByEmail(email) { }
-}
+  async updateItem(itemId, updatedFields) {
+    const [updated] = await Item.update(updatedFields, {
+      where: { id: itemId }
+    });
+    if (updated) {
+      const updatedItem = await this.getById(itemId);
+      return updatedItem;
+    }
+    
+  }
 
+  async getById(itemId) {
+    const item = await Item.findOne({
+      where: { id: itemId }
+    });
+    return item;
+  }
+
+  async getByName(name) {
+    const item = await Item.findOne({
+      where: { name: name }
+    });
+    return item;
+  }
+
+
+  async getByEmail(email) {
+    const itemLists = await Item.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ['name', 'email'],
+          where: { email: email }, // Menyertakan kondisi untuk email pengguna
+          required: true, // Menggunakan inner join agar hanya mengambil item yang memiliki pengguna terkait
+          as: "user",
+        },
+      ]
+    });
+    return itemLists;
+  }
+}
 module.exports = ItemRepository;

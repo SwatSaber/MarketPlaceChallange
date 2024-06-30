@@ -4,23 +4,20 @@
     "password": "123456789",
     "database": "challenge",
     "host": "localhost",
-    "dialect": "postgres",
-    "port": "5432"
+    "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
     "password": "123456789",
     "database": "challenge",
     "host": "localhost",
-    "dialect": "postgres",
-    "port": "5432"
+    "dialect": "postgres"
   },
   "production": {
     "username": "postgres",
     "password": "123456789",
     "database": "challenge",
     "host": "localhost",
-    "dialect": "postgres",
-    "port": "5432"
+    "dialect": "postgres"
   }
 }

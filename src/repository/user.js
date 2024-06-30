@@ -9,7 +9,7 @@ class UserRepository {
     return userList;
   }
 
-  async insert(user) {
+  async create(user) {
     const createdUser = await User.create({
       name: user.name,
       email: user.email,
@@ -19,7 +19,12 @@ class UserRepository {
     return createdUser;
   }
 
-  async getByEmail(email) { }
+  async getByEmail(email) {
+    const user = await User.findOne({
+      where: { email: email }
+    });
+    return user;
+  }
 }
 
 module.exports = UserRepository;

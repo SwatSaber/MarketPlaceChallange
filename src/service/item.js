@@ -2,80 +2,79 @@ class ItemService {
   constructor(itemRepository, userRepository) {
     this.itemRepository = itemRepository;
     this.userRepository = userRepository;
+    this.getByEmail = this.getByEmail.bind(this);
   }
 
   async findAll() {
-    const items = await this.itemRepository.findAll();
-
-    return items
+    try {
+      const items = await this.itemRepository.findAll();
+      return {
+        statusCode: 200,
+        listItems: items
+      };
+    } catch (error) {
+      return {
+        statusCode: 500,
+        allItems: null,
+        message: `Error fetching items: ${error.message}`
+      };
+    }
   }
 
-  async create(item) {
-    const createdItem = await this.itemRepository.insert(item)
+  async create(payload) {
+    try {
+      const createdItem = await this.itemRepository.insert(payload);
+      return {
+        statusCode: 201,
+        createdItem: createdItem
+      };
+    } catch (error) {
+      return {
+        statusCode: 500,
+        createdItem: null,
+        message: `Error creating item: ${error.message}`
+      };
+    }
+  }
 
-    return createdItem;
+  async update(payload) {
+    try {
+      const itemId = payload.itemId;
+      const updateFields = {
+        name: payload.name,
+        price: payload.price,
+        description: payload.description
+      };
+
+      const updatedItem = await this.itemRepository.updateItem(itemId, updateFields);
+      return {
+        statusCode: 200,
+        updatedItem: updatedItem
+      };
+    } catch (error) {
+      return {
+        statusCode: 500,
+        updatedItem: null,
+        message: `Error updating item: ${error.message}`
+      };
+    }
+  }
+
+  async getByEmail(email) {
+    try {
+      const listItems = await this.itemRepository.getByEmail(email);
+      return {
+        statusCode: 200,
+        listItems: listItems
+      };
+    } catch (error) {
+      return {
+        statusCode: 500,
+        listItem: null,
+        message: `Error updating item: ${error.message}`
+      };
+    }
   }
 }
 
 module.exports = ItemService;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // src/service/product.js
-// class ProductService {
-//   constructor(productRepository, userRepository) {
-//     this.productRepository = productRepository;
-//     this.userRepository = userRepository;
-
-//     this.getAll = this.getAll.bind(this);
-//     //this.getByEmail = this.getByEmail.bind(this);
-//     //this.add = this.add.bind(this);
-//   }
-
-//   getAll() {
-//     const product = this.productRepository.getAll();
-
-//     return product.map(product => {
-//       const user = this.userRepository.getByEmail(product.user_email);
-//       return {
-//         name: product.name,
-//         price: product.price,
-//         user: user ? { name: user.name, email: user.email } : null
-//       };
-//     });
-//   }
-
-//   create({ name, price, user_email }) {
-//     const existingProduct = this.productRepository.getByName(name);
-//     if (existingProduct) {
-//       return "Product Sudah Terdaftar";
-//     }
-
-//     const newProduct = { name, price, user_email  };
-//     const addedProduct = this.productRepository.create(newProduct);
-
-//     return addedProduct;
-//   }
-// }
-
-
